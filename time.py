@@ -24,26 +24,23 @@ while True:
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
   imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-  rects = [cv.minAreaRect(c) for c in contours if cv.contourArea(c) > 100]
+  filter = [(cv.minAreaRect(c)) for c in contours if cv.contourArea(c) > 100]
 
-  for cnt in contours:
-    M = cv.moments(cnt)
-    perimeter = cv.arcLength(cnt, True)
-    epsilon = 10 * perimeter
-    approx_contour = cv.approxPolyDP(cnt, epsilon, True)
-    
 
   mindiff = 360
   pair = (None, None)
   
-  for i in range(len(rects)):
-    for j in range(i+1, len(rects)):
-      linediff = abs(rects[i][2] - rects[j][2])
+  for i in range(len(filter)):
+    for j in range(i+1, len(filter)):
+      rect1 = filter[i][1]
+      rect2 = filter[j][1]
+
+      linediff = abs(rect1[2] - rect2[2])
       linediff = min(linediff, 180 - linediff)
 
       if linediff < mindiff:
         mindiff = linediff
-        pair = (contours[i], contours[j])
+        pair = (filter[i][0], filter[j][0])
 
   if pair[0] is not None:
     cv.drawContours(image, pair[0], -1, (255,255,255),7) 
