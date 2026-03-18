@@ -38,7 +38,7 @@ while True:
   
   for i in range(len(rects)):
     for j in range(i+1, len(rects)):
-      linediff = abs(rects[1][2] - rects[j][2])
+      linediff = abs(rects[i][2] - rects[j][2])
       linediff = min(linediff, 180 - linediff)
 
       if linediff < mindiff:
