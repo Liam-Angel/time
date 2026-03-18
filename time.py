@@ -22,18 +22,18 @@ while True:
   image = cv.Canny(image, 30,200)
 
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
-  poly = None
+
+  imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+  rects = [cv.minAreaRect(c) for c in contours if cv.contourArea(c) > 100]
+
   for cnt in contours:
     M = cv.moments(cnt)
     perimeter = cv.arcLength(cnt, True)
     epsilon = 10 * perimeter
-    poly = cv.approxPolyDP(cnt, epsilon, True)
+    approx_contour = cv.approxPolyDP(cnt, epsilon, True)
+    #x, y, w, h = cv.boundingRect(cnt)
+    #cv.rectangle(imageC, (x,y),(x+w,y+h),(255,0,0),2)
 
-  imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-  rects = [cv.minAreaRect(c) for c in poly if cv.contourArea(c) > 50]
-
-
- 
     
 
   mindiff = 180
@@ -55,6 +55,7 @@ while True:
   
     for item in pair:
       rows, cols = (imageC.shape[:2])
+
       [vx, vy, x, y,] = cv.fitLine(item, cv.DIST_L2,0,0.01,0,0.01)
       if vx > 0:
         lefty = int((-x*vy/vx)+y)
