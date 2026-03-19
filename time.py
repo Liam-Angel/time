@@ -4,6 +4,7 @@ from PIL import Image
 import cv2 as cv
 import os, sys, inspect #For dynamic filepaths
 import numpy as np;
+import math
 
 #Find the execution path and join it with the direct reference
 cam = cv.VideoCapture(0)
@@ -61,7 +62,7 @@ while True:
 
     for j in range(i+1, len(rects)):
       linediff = abs(rects[i][2] - rects[j][2])
-      linediff = min(linediff, 90 - linediff)
+      linediff = min(linediff, 180 - linediff)
 
       if linediff < mindiff:
           mindiff = linediff
