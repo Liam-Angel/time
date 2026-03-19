@@ -24,7 +24,9 @@ while True:
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
   imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-  rects = [cv.minAreaRect(c) for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
+
+  filter = [c for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
+  rects = [cv.minAreaRect(c) for c in filter]
 
   for cnt in contours:
     M = cv.moments(cnt)
@@ -59,18 +61,17 @@ while True:
 
     for j in range(i+1, len(rects)):
       linediff = abs(rects[i][2] - rects[j][2])
-      linediff = min(linediff, 180 - linediff)
-      if (cv.minAreaRect(contours[i])[1][0] + cv.minAreaRect(contours[i])[1][1]) >50 and (cv.minAreaRect(contours[j])[1][0] + cv.minAreaRect(contours[j])[1][1]) >50:
+      linediff = min(linediff, 90 - linediff)
 
-        if linediff < mindiff:
+      if linediff < mindiff:
           mindiff = linediff
-
-          pair = (contours[i], contours[j])
-          rectx = int(rects[i][0][0] - rects[j][0][0])
-          recty = int(rects[i][0][1] - rects[j][0][1])
+          print (linediff)
+          pair = (filter[i], filter[j])
+          rectx = int(rects[j][0][0] - rects[i][0][0])
+          recty = int(rects[j][0][1] - rects[i][0][1])
           
   if pair[0] is not None:
-    print(rectx, recty)
+    #print(rectx, recty)
     cv.circle(imageC, (rectx, recty), 20, (255,0,0),2)
 
 
