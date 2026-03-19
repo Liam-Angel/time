@@ -51,9 +51,20 @@ while True:
   pair = (None, None)
   
   for i in range(len(rects)):
-
     for j in range(i+1, len(rects)):
-      linediff = abs(rects[i][2] - rects[j][2])
+      
+      ri = rects[i][2]
+      rj = rects[i][2]
+
+      wi, hi = rects[i][1]
+      wj, hj = rects[j][1]
+
+      if wi < hi:
+        ri = ri + 90
+      if wj < hj:
+        rj = rj + 90
+
+      linediff = abs(ri - rj)
       linediff = min(linediff, 180 - linediff)
 
       print(rects[i][2], rects[j][2])
