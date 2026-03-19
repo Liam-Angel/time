@@ -24,15 +24,32 @@ while True:
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
   imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-  rects = [cv.minAreaRect(c) for c in contours if cv.contourArea(c) > 100]
+  rects = [cv.minAreaRect(c) for c in contours]
 
   for cnt in contours:
     M = cv.moments(cnt)
     perimeter = cv.arcLength(cnt, True)
     epsilon = 10 * perimeter
     approx_contour = cv.approxPolyDP(cnt, epsilon, True)
+
     #x, y, w, h = cv.boundingRect(cnt)
     #cv.rectangle(imageC, (x,y),(x+w,y+h),(255,0,0),2)
+  
+  for item in rects:
+    point = item[1]
+
+    rot1 = int(item[0][0])
+    rot2 = int(item[0][1])
+
+    
+
+    word = str(rot1) + ", " + str(rot2)
+
+    box = cv.boxPoints(item)
+    box = np.intp(box)
+    cv.drawContours(imageC,[box],0,(255,255,0),2)
+
+    cv.putText(imageC, word,(int(point[0]), int(point[1])),cv.FONT_HERSHEY_SIMPLEX,0.5,(0,255,255),1)
 
     
 
@@ -49,8 +66,7 @@ while True:
         pair = (contours[i], contours[j])
 
   if pair[0] is not None:
-    cv.drawContours(image, pair[0], -1, (255,255,255),2) 
-    cv.drawContours(image, pair[1], -1, (255,255,255),2) 
+
 
   
     for item in pair:
