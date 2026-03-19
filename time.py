@@ -24,7 +24,7 @@ while True:
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
   imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-  rects = [cv.minAreaRect(c) for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >50]
+  rects = [cv.minAreaRect(c) for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
 
   for cnt in contours:
     M = cv.moments(cnt)
@@ -60,8 +60,8 @@ while True:
     for j in range(i+1, len(rects)):
       linediff = abs(rects[i][2] - rects[j][2])
       linediff = min(linediff, 180 - linediff)
+      if (cv.minAreaRect(contours[i])[1][0] + cv.minAreaRect(contours[i])[1][1]) >50 and (cv.minAreaRect(contours[j])[1][0] + cv.minAreaRect(contours[j])[1][1]) >50:
 
-      if cv.contourArea(contours[i]) > 200 and cv.contourArea(contours[j]) > 200:
         if linediff < mindiff:
           mindiff = linediff
 
