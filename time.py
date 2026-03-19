@@ -4,12 +4,17 @@ from PIL import Image
 import cv2 as cv
 import os, sys, inspect #For dynamic filepaths
 import numpy as np;
-import math
+import serial
+import time
 
 #Find the execution path and join it with the direct reference
 cam = cv.VideoCapture(0)
 
-while True: 
+
+while True:
+  #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+  #ser.reset_input_buffer()  
+
   check, frame = cam.read()
   img = cv.resize(frame,(320,240))
 
@@ -28,6 +33,7 @@ while True:
 
   filter = [c for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
   rects = [cv.minAreaRect(c) for c in filter]
+
 
  
   for item in rects:
@@ -52,7 +58,7 @@ while True:
   
   for i in range(len(rects)):
     for j in range(i+1, len(rects)):
-      
+
       ri = rects[i][2]
       rj = rects[i][2]
 
@@ -67,19 +73,27 @@ while True:
       linediff = abs(ri - rj)
       linediff = min(linediff, 180 - linediff)
 
-      print(rects[i][2], rects[j][2])
+      #print(rects[i][2], rects[j][2])
 
 
       if linediff < mindiff:
-            mindiff = linediff
-            #print (linediff)
-            pair = (filter[i], filter[j])
-            rectx = int((rects[j][0][0] + rects[i][0][0])/2)
-            recty = int((rects[j][0][1] + rects[i][0][1])/2)
+        mindiff = linediff
+        #print (linediff)
+        pair = (filter[i], filter[j])
+        rectx = int((rects[j][0][0] + rects[i][0][0])/2)
+        recty = int((rects[j][0][1] + rects[i][0][1])/2)
           
   if pair[0] is not None:
     #print(rectx, recty)
     cv.circle(imageC, (rectx, recty), 20, (255,0,0),2)
+
+    #ser.write(bytes(str(rectx), encoding="utf-8"))
+    #print(rectx)
+    #time.sleep(1)
+    #if ser.in_waiting > 0:
+            
+      #line = ser.readline().decode('utf-8').rstrip()
+      #print("line", line)
 
 
     for item in pair:
