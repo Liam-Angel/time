@@ -29,15 +29,7 @@ while True:
   filter = [c for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
   rects = [cv.minAreaRect(c) for c in filter]
 
-  for cnt in contours:
-    M = cv.moments(cnt)
-    perimeter = cv.arcLength(cnt, True)
-    epsilon = 10 * perimeter
-    approx_contour = cv.approxPolyDP(cnt, epsilon, True)
-
-    #x, y, w, h = cv.boundingRect(cnt)
-    #cv.rectangle(imageC, (x,y),(x+w,y+h),(255,0,0),2)
-  
+ 
   for item in rects:
     point = item[0]
 
@@ -64,12 +56,15 @@ while True:
       linediff = abs(rects[i][2] - rects[j][2])
       linediff = min(linediff, 180 - linediff)
 
+      print(rects[i][2], rects[j][2])
+
+
       if linediff < mindiff:
-          mindiff = linediff
-          print (linediff)
-          pair = (filter[i], filter[j])
-          rectx = int(rects[j][0][0] - rects[i][0][0])
-          recty = int(rects[j][0][1] - rects[i][0][1])
+            mindiff = linediff
+            #print (linediff)
+            pair = (filter[i], filter[j])
+            rectx = int((rects[j][0][0] + rects[i][0][0])/2)
+            recty = int((rects[j][0][1] + rects[i][0][1])/2)
           
   if pair[0] is not None:
     #print(rectx, recty)
