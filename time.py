@@ -66,6 +66,8 @@ while True:
           mindiff = linediff
 
           pair = (contours[i], contours[j])
+          mid = (rects[i][0][0]+rects[j][0][0])
+          print (mid)
 
   if pair[0] is not None:
 
