@@ -66,10 +66,13 @@ while True:
           mindiff = linediff
 
           pair = (contours[i], contours[j])
-          mid = (rects[i][0][0]+rects[j][0][0])
-          print (mid)
-
+          rectx = int(rects[i][0][0] - rects[j][0][0])
+          recty = int(rects[i][0][1] - rects[j][0][1])
+          
   if pair[0] is not None:
+    print(rectx, recty)
+    cv.circle(imageC, (rectx, recty), 20, (255,0,0),2)
+
 
     for item in pair:
       rows, cols = (imageC.shape[:2])
