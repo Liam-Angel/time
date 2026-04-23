@@ -1,11 +1,8 @@
 
 from PIL import Image
 import cv2 as cv
-import os, sys, inspect
 import numpy as np;
 import serial
-import datetime
-import time
 
 cam = cv.VideoCapture(0, cv.CAP_V4L2)
 cam.set(cv.CAP_PROP_FRAME_WIDTH, 640)
@@ -30,7 +27,6 @@ while True:
 
   contours, hierarchy = cv.findContours(image,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE)
 
-  imageC = cv.cvtColor(image, cv.COLOR_BGR2RGB)
 
   filter = [c for c in contours if (cv.minAreaRect(c)[1][0] + cv.minAreaRect(c)[1][1]) >80]
   rects = [cv.minAreaRect(c) for c in filter]
@@ -62,7 +58,7 @@ while True:
         recty = int((rects[j][0][1] + rects[i][0][1])/2)
           
   if pair[0] is not None:
-    cv.circle(imageC, (rectx, recty), 10, (255,0,0),2)
+    cv.circle(frame, (rectx, recty), 10, (255,0,0),2)
 
 
     ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
@@ -73,15 +69,15 @@ while True:
       print("line", line)
 
     for item in pair:
-      rows, cols = (imageC.shape[:2])
+      rows, cols = (frame.shape[:2])
 
       [vx, vy, x, y,] = cv.fitLine(item, cv.DIST_L2,0,0.01,0,0.01)
       if vx > 0:
         lefty = int((-x*vy/vx)+y)
         righty = int(((cols-x)*vy/vx)+y)
-        cv.line(imageC,(cols-1,righty),(0,lefty),(0,255,0),2)
+        cv.line(frame,(cols-1,righty),(0,lefty),(0,255,0),2)
 
-  cv.imshow('imageC', imageC)
+  cv.imshow('imageC', frame)
 
   key = cv.waitKey(1)
   if key == 27: 
