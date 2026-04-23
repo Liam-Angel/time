@@ -65,18 +65,12 @@ while True:
     cv.circle(imageC, (rectx, recty), 10, (255,0,0),2)
 
 
-    if ser.in_waiting > 0:  
-      ser.write(bytes(str(rectx), encoding="utf-8"))
-      time.sleep(1)
+    ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
 
 
-    
-
-    #print(rectx)
-    #time.sleep(0.1)
-  #  if ser.in_waiting > 0:          
-      #line = ser.readline().decode('utf-8').rstrip()
-     # print("line", line)
+    if ser.in_waiting > 0:          
+      line = ser.readline().decode('utf-8').rstrip()
+      print("line", line)
 
     for item in pair:
       rows, cols = (imageC.shape[:2])
