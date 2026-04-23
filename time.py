@@ -7,19 +7,21 @@ import serial
 import datetime
 import time
 
-cam = cv.VideoCapture(0)
-#prevtime = datetime.datetime.now()
+cam = cv.VideoCapture(0, cv.CAP_V4L2)
+cam.set(cv.CAP_PROP_FRAME_WIDTH, 640)
+cam.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
+cam.set(cv.CAP_PROP_FPS, 30)
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser.reset_input_buffer() 
 
 while True:
-  #nowtime = datetime.datetime.now()
-  ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0)
-  ser.reset_input_buffer()  
-  #print(datetime.datetime.now())
-
+  
+  
   check, frame = cam.read()
-  img = cv.resize(frame,(320,240))
+  
 
-  image = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+  image = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
   image = cv.GaussianBlur(image, (11, 11), sigmaX=0)
 
   _, image = cv.threshold(image, 125, 255, cv.THRESH_BINARY)
@@ -62,19 +64,19 @@ while True:
   if pair[0] is not None:
     cv.circle(imageC, (rectx, recty), 10, (255,0,0),2)
 
-    #if (prevtime - time).total_seconds() > 3:
-    ser.write(bytes(str(rectx), encoding="utf-8"))
+
+    if ser.in_waiting > 0:  
+      ser.write(bytes(str(rectx), encoding="utf-8"))
+      time.sleep(1)
 
 
-    #print(prevtime)
-    #print((prevtime - time).total_seconds())
     
 
     #print(rectx)
     #time.sleep(0.1)
-    #if ser.in_waiting > 0:          
+  #  if ser.in_waiting > 0:          
       #line = ser.readline().decode('utf-8').rstrip()
-      #print("line", line)
+     # print("line", line)
 
     for item in pair:
       rows, cols = (imageC.shape[:2])
@@ -84,7 +86,6 @@ while True:
         lefty = int((-x*vy/vx)+y)
         righty = int(((cols-x)*vy/vx)+y)
         cv.line(imageC,(cols-1,righty),(0,lefty),(0,255,0),2)
-        #print(vx, vy, x, y)
 
   cv.imshow('imageC', imageC)
 
