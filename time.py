@@ -33,12 +33,23 @@ while True:
 
   mindiff = 180
   pair = (None, None)
-  
+  angle = 0
+
+  if len(rects) == 1:
+    if rects[0][0][0] > 320:
+     ser.write(bytes(str(100) + '\n', encoding="utf-8"))
+     print("r")
+    if rects[0][0][0] < 320:
+     ser.write(bytes(str(540) + '\n', encoding="utf-8"))
+     print("l")
+
+
   for i in range(len(rects)):
     for j in range(i+1, len(rects)):
 
       ri = rects[i][2]
       rj = rects[j][2]
+
 
       wi, hi = rects[i][1]
       wj, hj = rects[j][1]
@@ -56,12 +67,17 @@ while True:
         pair = (filter[i], filter[j])
         rectx = int((rects[j][0][0] + rects[i][0][0])/2)
         recty = int((rects[j][0][1] + rects[i][0][1])/2)
+        angle = rj
           
   if pair[0] is not None:
     cv.circle(frame, (rectx, recty), 10, (255,0,0),2)
 
+    mapp = np.interp(angle, [0, 180], [0, 640])
 
-    ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
+    if rectx in range(290, 350):
+      ser.write(bytes(str(mapp) + '\n', encoding="utf-8"))
+    else:
+     ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
 
 
     if ser.in_waiting > 0:          
