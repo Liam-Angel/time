@@ -36,10 +36,10 @@ while True:
   angle = 0
 
   if len(rects) == 1:
-    if rects[0][0][0] > 320:
+    if rects[0][2] > 90:
      ser.write(bytes(str(100) + '\n', encoding="utf-8"))
      print("r")
-    if rects[0][0][0] < 320:
+    if rects[0][2] < 90:
      ser.write(bytes(str(540) + '\n', encoding="utf-8"))
      print("l")
 
@@ -72,10 +72,10 @@ while True:
   if pair[0] is not None:
     cv.circle(frame, (rectx, recty), 10, (255,0,0),2)
 
-    mapp = np.interp(angle, [0, 180], [0, 640])
-
-    if rectx in range(290, 350):
-      ser.write(bytes(str(mapp) + '\n', encoding="utf-8"))
+    mapp = np.interp(int(angle), [0, 180], [0, 640])
+    
+    if rectx in range(0, 640):
+      ser.write(bytes(str(int(mapp)) + '\n', encoding="utf-8"))
     else:
      ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
      #print(rectx)
