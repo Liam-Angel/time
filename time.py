@@ -65,9 +65,9 @@ while True:
 
       linediff = abs(ri - rj)
       linediff = min(linediff, 180 - linediff)
+      dist = (rects[j][0][0] - rects[i][0][0])
 
-
-      if linediff < mindiff:
+      if linediff < mindiff and dist > 8:
         mindiff = linediff
         pair = (filter[i], filter[j])
         rectx = int((rects[j][0][0] + rects[i][0][0])/2)
