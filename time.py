@@ -35,17 +35,6 @@ while True:
   pair = (None, None)
   angle = 0
 
-  if len(rects) == 1:
-    r = rects[0][2]
-
-    w, h = rects[0][1]
-
-    if w < h:
-        r = r + 90
-
-    mapp = np.interp(int(r), [0, 180], [0, 640])
-    ser.write(bytes(str(mapp) + '\n', encoding="utf-8"))
-
 
 
   for i in range(len(rects)):
@@ -65,21 +54,22 @@ while True:
 
       linediff = abs(ri - rj)
       linediff = min(linediff, 180 - linediff)
-      dist = (rects[j][0][0] - rects[i][0][0])
+      dist = (rects[i][0][0] - rects[j][0][0])
 
-      if linediff < mindiff and dist > 8:
+      if linediff < mindiff and dist > 100:
+        #print(dist)
         mindiff = linediff
         pair = (filter[i], filter[j])
         rectx = int((rects[j][0][0] + rects[i][0][0])/2)
         recty = int((rects[j][0][1] + rects[i][0][1])/2)
         angle = rj
-          
+   
   if pair[0] is not None:
     cv.circle(frame, (rectx, recty), 10, (255,0,0),2)
 
     mapp = np.interp(int(angle), [0, 180], [0, 640])
     
-    if rectx in range(290, 350):
+    if rectx in range(280, 360):
       ser.write(bytes(str(int(mapp)) + '\n', encoding="utf-8"))
     else:
      ser.write(bytes(str(rectx) + '\n', encoding="utf-8"))
@@ -97,6 +87,23 @@ while True:
         lefty = int((-x*vy/vx)+y)
         righty = int(((cols-x)*vy/vx)+y)
         cv.line(frame,(cols-1,righty),(0,lefty),(0,255,0),2)
+  else:
+   if len(rects) > 0:
+    r = rects[0][2]
+
+    w, h = rects[0][1]
+
+    if w < h:
+        r = r + 90
+    rx = rects[0][0][0]
+
+    if rx < 320:
+      mapp = np.interp(r, [0, 180], [0, 320])   
+      ser.write(bytes(str(int(mapp)) + '\n', encoding="utf-8"))
+    else:
+      mapp = np.interp(r, [0, 180], [640, 320])   
+      ser.write(bytes(str(int(mapp)) + '\n', encoding="utf-8"))
+
 
   cv.imshow('imageC', frame)
 
